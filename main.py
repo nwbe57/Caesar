@@ -42,23 +42,24 @@ class Index(webapp2.RequestHandler):
             """
 
             Input_form = """
-                <form action="/Input_form" method="post">
-                    <label>
-                        <input type="text" name="input-text">
-                    </label>
-                </form>
+            <form action="/Input_form" method="post">
+                <label>
+                    <input type="text" name="input-text">
+                </label>
+            </form>
             """
 
             Submit_form = """
-                <form action="/Submit_form" method="post">
-                    <label>
-                        <input type="submit" name="submit-button">
-                    </label>
-                </form>
+            <form action="/Submit_form" method="post">
+                <label>
+                    <input type="submit" name="submit-button">
+                </label>
+            </form>
             """
 
-
-        self.response.write('')
+        main_content = Rotate_by_form + Input_form + Submit_form
+        response = page_header + main_content + page_footer
+        self.response.write(response)
 
 app = webapp2.WSGIApplication([
     ('/', Index)
