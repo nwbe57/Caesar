@@ -2,20 +2,32 @@ import webapp2
 import cgi
 from caesar import encrypt
 
-# html boilerplate for the top of every page
-page_header = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Caesar</title>
-</head>
-<body>
-"""
 
-# html boilerplate for the bottom of every page
-page_footer = """
-</body>
-</html>
+
+
+input_form = """
+<form method="post" style="padding-left: 30%; font-size: 20px;">
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Caesar</title>
+    </head>
+    <body>
+    <label>
+        Rotate by:
+        <input type="int" name="rotation" style="width: 30px; font-size: 20px;" value="0"/>
+    </label>
+    <br>
+    <textarea input type="text" name="text"
+            style="height: 100px; width: 500px; height: 300px; font-size: 20px;">{0}
+    </textarea>
+    <br>
+    <label>
+        <input type="submit" value="Submit" style="font-size: 20px;"/>
+    </label>
+    </body>
+    </html>
+</form>
 """
 
 class Index(webapp2.RequestHandler):
@@ -24,68 +36,21 @@ class Index(webapp2.RequestHandler):
     """
 
     def get(self):
+        clean_form = input_form.format("")
 
-        input_form = """
-        <form action="/input" method="post" style="padding-left: 30%; font-size: 20px;">
-            <label>
-                Rotate by:
-                <input type="int" name="rotation" style="width: 30px; font-size: 20px;"/>
-            </label>
-            <br>
-            <textarea input type="text" name="text"
-                    style="height: 100px; width: 500px; height: 300px; font-size: 20px;">
-            </textarea>
-            <br>
-            <label>
-                <input type="submit" value="Submit" style="font-size: 20px;"/>
-            </label>
-        </form>
-        """
 
-        response = page_header + input_form + page_footer
-        self.response.write(response)
-
-class Output(webapp2.RequestHandler):
-    """ Handles requests coming in to '/input'
-        e.g. www.Caesar.com/input
-    """
-
-    # def get(self):
-    #
-    #     output_form = """
-    #     <form action="/output" method="post" style="padding-left: 30%; font-size: 20px;">
-    #         <label>
-    #             Rotate by:
-    #             <input type="int" name="rotation" style="width: 30px; font-size: 20px;"/>
-    #         </label>
-    #         <br>
-    #         <textarea input type="text" name="usertext"
-    #                 style="height: 100px; width: 500px; height: 300px; font-size: 20px;">
-    #         </textarea>
-    #         <br>
-    #         <label>
-    #             <input type="submit" value="Submit" style="font-size: 20px;"/>
-    #         </label>
-    #     </form>
-    #     """
-    #
-    #     response = page_header + output_form + page_footer
-    #     self.response.write(response)
+        self.response.out.write(clean_form)
 
     def post(self):
-
+        answer = ''
         usertext = str(self.request.get("text"))
         rotby = int(self.request.get("rotation"))
 
-        answer = encrypt(usertext, rotby)
+        answer = encrypt(usertext,rotby)
 
-        self.response.write(answer)
-        #self.redirect('/output')
-        #usertext.replace(usertext, answer)
+        self.response.out.write(input_form.format(answer))
 
 
 app = webapp2.WSGIApplication([
-    ('/', Index),
-    ('/input', Output),
-    ('/output', Output)
+    ('/', Index)
 ], debug=True)
